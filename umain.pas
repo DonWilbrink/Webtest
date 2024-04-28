@@ -8,7 +8,11 @@ uses
 
 type
   TForm1 = class(TWebForm)
-    WebLabel1: TWebLabel;
+    lblNaam: TWebLabel;
+    btnNaam: TWebButton;
+    edNaam: TWebEdit;
+    procedure btnNaamClick(Sender: TObject);
+    procedure WebFormShow(Sender: TObject);
   private
     { Private declarations }
   public
@@ -21,5 +25,16 @@ var
 implementation
 
 {$R *.dfm}
+
+procedure TForm1.btnNaamClick(Sender: TObject);
+begin
+  lblNaam.Caption := 'Hallo ' + edNaam.Text;
+  edNaam.SetFocus;
+end;
+
+procedure TForm1.WebFormShow(Sender: TObject);
+begin
+  edNaam.SetFocus;
+end;
 
 end.

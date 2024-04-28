@@ -21666,6 +21666,8 @@ rtl.module("WEBLib.Menus",["System","Classes","SysUtils","WEBLib.Controls","WEBL
   rtl.createClass(this,"TWebPopupMenu",this.TPopupMenu,function () {
     rtl.addIntf(this,pas.System.IUnknown);
   });
+  this.$rtti.$Class("TWebCustomControl");
+  this.$rtti.$ClassRef("TWebCustomControlClass",{instancetype: this.$rtti["TWebCustomControl"]});
   rtl.createClass(this,"TWebCustomControl",pas["WEBLib.Controls"].TCustomControl,function () {
     this.$init = function () {
       pas["WEBLib.Controls"].TCustomControl.$init.call(this);
@@ -28976,8 +28978,8 @@ rtl.module("WEBLib.JSON",["System","Classes","Web","JS","SysUtils"],function () 
         Result = $mod.TJSONNull.$create("Create")}
        else if (pas.JS.isBoolean(AJSValue)) {
         if (pas.JS.toBoolean(AJSValue)) {
-          Result = $mod.TJSONTrue.$create("Create")}
-         else Result = $mod.TJSONFalse.$create("Create");
+          Result = $mod.TJSONTrue.$create("Create$3")}
+         else Result = $mod.TJSONFalse.$create("Create$3");
       };
       if (!(Result != null)) Result = $mod.TJSONNull.$create("Create");
       Result.fjv = AJSValue;
@@ -29357,12 +29359,21 @@ rtl.module("WEBLib.JSON",["System","Classes","Web","JS","SysUtils"],function () 
       s = pas.SysUtils.UpperCase(Value);
       this.FBool = s === "TRUE";
     };
+    this.Create$2 = function (AValue) {
+      pas.System.TObject.Create.call(this);
+      this.FBool = AValue;
+      return this;
+    };
   });
   rtl.createClass(this,"TJSONTrue",this.TJSONBool,function () {
     this.GetStrValue = function () {
       var Result = "";
       Result = "true";
       return Result;
+    };
+    this.Create$3 = function () {
+      $mod.TJSONBool.Create$2.call(this,true);
+      return this;
     };
     this.ToString = function () {
       var Result = "";
@@ -29375,6 +29386,10 @@ rtl.module("WEBLib.JSON",["System","Classes","Web","JS","SysUtils"],function () 
       var Result = "";
       Result = "false";
       return Result;
+    };
+    this.Create$3 = function () {
+      $mod.TJSONBool.Create$2.call(this,false);
+      return this;
     };
     this.ToString = function () {
       var Result = "";
@@ -29481,6 +29496,9 @@ rtl.module("WEBLib.JSON",["System","Classes","Web","JS","SysUtils"],function () 
       this.GetJA().push(Element);
     };
     this.Add$5 = function (Element) {
+      this.GetJA().push(Element);
+    };
+    this.AddElement = function (Element) {
       this.GetJA().push(Element);
     };
     this.ToJSON = function () {
@@ -30198,8 +30216,8 @@ rtl.module("WEBLib.REST",["System","Classes","Web","JS","SysUtils","WEBLib.Contr
         if (pas.JS.isBoolean(js)) {
           jvb = js;
           if (jvb) {
-            Result = pas["WEBLib.JSON"].TJSONTrue.$create("Create")}
-           else Result = pas["WEBLib.JSON"].TJSONFalse.$create("Create");
+            Result = pas["WEBLib.JSON"].TJSONTrue.$create("Create$3")}
+           else Result = pas["WEBLib.JSON"].TJSONFalse.$create("Create$3");
         };
         Result = pas["WEBLib.JSON"].TJSONValue.$create("Create$1",[js]);
       };
@@ -37169,6 +37187,8 @@ rtl.module("WEBLib.Controls",["System","Classes","WEBLib.Graphics","Types","SysU
     var $r = this.$rtti;
     $r.addMethod("Create$1",2,[["AControl",$mod.$rtti["TControl"]],["AKind",$mod.$rtti["TScrollBarKind"]]]);
   });
+  this.$rtti.$Class("TWinControl");
+  this.$rtti.$ClassRef("TWinControlClass",{instancetype: this.$rtti["TWinControl"]});
   rtl.createClass(this,"TWinControl",this.TControl,function () {
     rtl.addIntf(this,pas.System.IUnknown);
     var $r = this.$rtti;
@@ -37194,6 +37214,8 @@ rtl.module("WEBLib.Controls",["System","Classes","WEBLib.Graphics","Types","SysU
     $r.addProperty("OnEnter",0,$mod.$rtti["TNotifyEvent"],"FOnEnter","FOnEnter");
     $r.addProperty("OnExit",0,$mod.$rtti["TNotifyEvent"],"FOnExit","FOnExit");
   });
+  this.$rtti.$Class("TCustomControl");
+  this.$rtti.$ClassRef("TCustomControlClass",{instancetype: this.$rtti["TCustomControl"]});
   rtl.createClass(this,"TCustomControl",this.TWinControl,function () {
     this.$init = function () {
       $mod.TWinControl.$init.call(this);
@@ -37383,7 +37405,9 @@ rtl.module("WEBLib.Controls",["System","Classes","WEBLib.Graphics","Types","SysU
               this.GetElementStyle().setProperty("border-width","1px");
               this.GetElementStyle().setProperty("border-color",pas["WEBLib.Graphics"].ColorToHTML(this.FBorderColor));
             } else this.GetElementStyle().setProperty("border-style","");
-          } else this.GetElementStyle().setProperty("border-style","none");
+          } else {
+            this.GetElementStyle().setProperty("border-style","none");
+          };
         };
         if (this.FElementClassName !== "") {
           this.GetElementStyle().removeProperty("border-style");
@@ -42169,7 +42193,9 @@ rtl.module("WEBLib.Graphics",["System","Classes","Types","Web","JS"],function ()
   };
   this.ColorToHTML = function (c) {
     var Result = "";
-    if ((c & 0xFF000000) !== 0) {
+    if ((c & 0xFFFFFFFF) === -1) {
+      Result = "#00000000"}
+     else if ((c & 0xFF000000) !== 0) {
       Result = "#" + $mod.ColorToHex(c & 0xFFFFFF) + pas.SysUtils.IntToHex(Math.floor((c & 0xFF000000) / 16777216) & 0xFF,2);
     } else Result = "#" + $mod.ColorToHex(c);
     return Result;
@@ -43361,7 +43387,7 @@ rtl.module("WEBLib.Forms",["System","Classes","Types","SysUtils","WEBLib.Graphic
   "use strict";
   var $mod = this;
   var $impl = $mod.$impl;
-  this.WEBCOREVERSION = "2.5.0.0";
+  this.WEBCOREVERSION = "2.5.2.0";
   this.idOK = 1;
   this.idCancel = 2;
   this.idAbort = 3;
@@ -44233,9 +44259,19 @@ rtl.module("WEBLib.Forms",["System","Classes","Types","SysUtils","WEBLib.Graphic
       if (this.FOnResize != null) this.FOnResize(this);
     };
     this.DoShow = function () {
+      this.DoAutoFocus();
       if ((this.FOnShow != null) && !this.FShown) {
         this.FShown = true;
         this.FOnShow(this);
+      };
+    };
+    this.DoAutoFocus = function () {
+      var i = 0;
+      for (var $l = 0, $end = this.GetControlsCount() - 1; $l <= $end; $l++) {
+        i = $l;
+        if ((this.GetControls(i).FTabOrder === 0) && this.GetControls(i).FTabStop) {
+          this.GetControls(i).SetFocus();
+        };
       };
     };
     this.Paint = function () {
@@ -45004,7 +45040,6 @@ rtl.module("WEBLib.Forms",["System","Classes","Types","SysUtils","WEBLib.Graphic
       };
     };
     this.Show$1 = function () {
-      var i = 0;
       var dr = null;
       if (this.FCreating && this.FPopup) {
         $mod.Application.ChangeMaxZIndex(+1);
@@ -45050,10 +45085,6 @@ rtl.module("WEBLib.Forms",["System","Classes","Types","SysUtils","WEBLib.Graphic
       };
       this.SetVisible(true);
       this.DoShow();
-      for (var $l = 0, $end = this.GetControlsCount() - 1; $l <= $end; $l++) {
-        i = $l;
-        if ((this.GetControls(i).FTabOrder === 0) && this.GetControls(i).FTabStop) this.GetControls(i).SetFocus();
-      };
     };
     this.ShowModal = function () {
       var Result = 0;
@@ -46251,10 +46282,13 @@ rtl.module("WEBLib.Forms",["System","Classes","Types","SysUtils","WEBLib.Graphic
     this.CreateFormDirect = function (AInstanceClass, AReference) {
       this.CreateForm$3(AInstanceClass,this.FAppContainer,AReference,null,false);
     };
-    this.CreateFormDirect$1 = function (AInstanceClass, AReference) {
-      this.CreateForm$4(AInstanceClass,AReference);
+    this.CreateFormDirect$1 = function (AInstanceClass, AElementID, AReference) {
+      this.CreateForm$3(AInstanceClass,AElementID,AReference,null,false);
     };
     this.CreateFormDirect$2 = function (AInstanceClass, AReference) {
+      this.CreateForm$4(AInstanceClass,AReference);
+    };
+    this.CreateFormDirect$3 = function (AInstanceClass, AReference) {
       this.CreateForm$5(AInstanceClass,AReference);
     };
     this.LoadForm = function (AForm, AFormFile) {
@@ -51437,52 +51471,105 @@ rtl.module("WEBLib.StdCtrls",["System","Classes","WEBLib.Controls","SysUtils","W
     return Result;
   };
 });
-rtl.module("Unit1",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics","WEBLib.Controls","WEBLib.Forms","WEBLib.Dialogs","WEBLib.Controls","WEBLib.StdCtrls","WEBLib.StdCtrls"],function () {
+rtl.module("umain",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics","WEBLib.Controls","WEBLib.Forms","WEBLib.Dialogs","WEBLib.Controls","WEBLib.StdCtrls","WEBLib.StdCtrls"],function () {
   "use strict";
   var $mod = this;
   rtl.createClass(this,"TForm1",pas["WEBLib.Forms"].TForm,function () {
     this.$init = function () {
       pas["WEBLib.Forms"].TForm.$init.call(this);
-      this.WebLabel1 = null;
+      this.lblNaam = null;
+      this.btnNaam = null;
+      this.edNaam = null;
     };
     this.$final = function () {
-      this.WebLabel1 = undefined;
+      this.lblNaam = undefined;
+      this.btnNaam = undefined;
+      this.edNaam = undefined;
       pas["WEBLib.Forms"].TForm.$final.call(this);
+    };
+    this.btnNaamClick = function (Sender) {
+      this.lblNaam.SetCaption("Hallo " + this.edNaam.GetText());
+      this.edNaam.SetFocus();
+    };
+    this.WebFormShow = function (Sender) {
+      this.edNaam.SetFocus();
     };
     this.LoadDFMValues = function () {
       pas["WEBLib.Forms"].TCustomForm.LoadDFMValues.call(this);
-      this.WebLabel1 = pas["WEBLib.StdCtrls"].TLabel.$create("Create$1",[this]);
-      this.WebLabel1.BeforeLoadDFMValues();
+      this.lblNaam = pas["WEBLib.StdCtrls"].TLabel.$create("Create$1",[this]);
+      this.btnNaam = pas["WEBLib.StdCtrls"].TButton.$create("Create$1",[this]);
+      this.edNaam = pas["WEBLib.StdCtrls"].TEdit.$create("Create$1",[this]);
+      this.lblNaam.BeforeLoadDFMValues();
+      this.btnNaam.BeforeLoadDFMValues();
+      this.edNaam.BeforeLoadDFMValues();
       try {
         this.SetName("Form1");
         this.SetWidth(640);
         this.SetHeight(480);
-        this.WebLabel1.SetParentComponent(this);
-        this.WebLabel1.SetName("WebLabel1");
-        this.WebLabel1.SetLeft(88);
-        this.WebLabel1.SetTop(96);
-        this.WebLabel1.SetWidth(158);
-        this.WebLabel1.SetHeight(37);
-        this.WebLabel1.SetCaption("Hallo wereld!");
-        this.WebLabel1.FFont.FCharset = 1;
-        this.WebLabel1.FFont.SetColor(65793);
-        this.WebLabel1.FFont.SetHeight(-27);
-        this.WebLabel1.FFont.SetName("Segoe UI");
-        this.WebLabel1.FFont.SetStyle({});
-        this.WebLabel1.SetHeightPercent(100.000000000000000000);
-        this.WebLabel1.SetParentFont(false);
-        this.WebLabel1.SetWidthPercent(100.000000000000000000);
+        this.FCSSLibrary = pas["WEBLib.Forms"].TCSSLibrary.cssBootstrap;
+        this.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.SetEvent(this,"OnShow","WebFormShow");
+        this.lblNaam.SetParentComponent(this);
+        this.lblNaam.SetName("lblNaam");
+        this.lblNaam.SetLeft(88);
+        this.lblNaam.SetTop(96);
+        this.lblNaam.SetWidth(158);
+        this.lblNaam.SetHeight(37);
+        this.lblNaam.SetCaption("Hallo wereld!");
+        this.lblNaam.FFont.FCharset = 1;
+        this.lblNaam.FFont.SetColor(65793);
+        this.lblNaam.FFont.SetHeight(-27);
+        this.lblNaam.FFont.SetName("Segoe UI");
+        this.lblNaam.FFont.SetStyle({});
+        this.lblNaam.SetHeightPercent(100.000000000000000000);
+        this.lblNaam.SetParentFont(false);
+        this.lblNaam.SetWidthPercent(100.000000000000000000);
+        this.btnNaam.SetParentComponent(this);
+        this.btnNaam.SetName("btnNaam");
+        this.btnNaam.SetLeft(376);
+        this.btnNaam.SetTop(160);
+        this.btnNaam.SetWidth(145);
+        this.btnNaam.SetHeight(41);
+        this.btnNaam.SetCaption("Geef naam");
+        this.btnNaam.SetChildOrderEx(1);
+        this.btnNaam.SetElementClassName("btn btn-primary");
+        this.btnNaam.SetHeightPercent(100.000000000000000000);
+        this.btnNaam.SetWidthPercent(100.000000000000000000);
+        this.SetEvent$1(this.btnNaam,this,"OnClick","btnNaamClick");
+        this.edNaam.SetParentComponent(this);
+        this.edNaam.SetName("edNaam");
+        this.edNaam.SetLeft(88);
+        this.edNaam.SetTop(161);
+        this.edNaam.SetWidth(257);
+        this.edNaam.SetHeight(40);
+        this.edNaam.SetChildOrderEx(2);
+        this.edNaam.SetElementClassName("form-control");
+        this.edNaam.FFont.FCharset = 1;
+        this.edNaam.FFont.SetColor(65793);
+        this.edNaam.FFont.SetHeight(-21);
+        this.edNaam.FFont.SetName("Segoe UI");
+        this.edNaam.FFont.SetStyle({});
+        this.edNaam.SetHeightPercent(100.000000000000000000);
+        this.edNaam.SetParentFont(false);
+        this.edNaam.SetTextHint("Naam");
+        this.edNaam.SetWidthPercent(100.000000000000000000);
       } finally {
-        this.WebLabel1.AfterLoadDFMValues();
+        this.lblNaam.AfterLoadDFMValues();
+        this.btnNaam.AfterLoadDFMValues();
+        this.edNaam.AfterLoadDFMValues();
       };
     };
     rtl.addIntf(this,pas.System.IUnknown);
     var $r = this.$rtti;
-    $r.addField("WebLabel1",pas["WEBLib.StdCtrls"].$rtti["TLabel"]);
+    $r.addField("lblNaam",pas["WEBLib.StdCtrls"].$rtti["TLabel"]);
+    $r.addField("btnNaam",pas["WEBLib.StdCtrls"].$rtti["TButton"]);
+    $r.addField("edNaam",pas["WEBLib.StdCtrls"].$rtti["TEdit"]);
+    $r.addMethod("btnNaamClick",0,[["Sender",pas.System.$rtti["TObject"]]]);
+    $r.addMethod("WebFormShow",0,[["Sender",pas.System.$rtti["TObject"]]]);
   });
   this.Form1 = null;
 });
-rtl.module("program",["System","WEBLib.Forms","WEBLib.Forms","Unit1"],function () {
+rtl.module("program",["System","WEBLib.Forms","WEBLib.Forms","umain"],function () {
   "use strict";
   var $mod = this;
   $mod.$implcode = function () {
@@ -51497,7 +51584,7 @@ rtl.module("program",["System","WEBLib.Forms","WEBLib.Forms","Unit1"],function (
   $mod.$main = function () {
     pas["WEBLib.Forms"].Application.Initialize();
     pas["WEBLib.Forms"].Application.FMainFormOnTaskBar = true;
-    pas["WEBLib.Forms"].Application.CreateForm(pas.Unit1.TForm1,{p: pas.Unit1, get: function () {
+    pas["WEBLib.Forms"].Application.CreateForm(pas.umain.TForm1,{p: pas.umain, get: function () {
         return this.p.Form1;
       }, set: function (v) {
         this.p.Form1 = v;
@@ -51505,4 +51592,4 @@ rtl.module("program",["System","WEBLib.Forms","WEBLib.Forms","Unit1"],function (
     pas["WEBLib.Forms"].Application.Run();
   };
 });
-//# sourceMappingURL=Project1.js.map
+//# sourceMappingURL=webtest.js.map
