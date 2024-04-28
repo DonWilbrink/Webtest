@@ -1,9 +1,9 @@
-program Project1;
+program webtest;
 
 uses
   Vcl.Forms,
   WEBLib.Forms,
-  Unit1 in 'Unit1.pas' {Form1: TWebForm} {*.html};
+  umain in 'umain.pas' {Form1: TWebForm} {*.html};
 
 {$R *.res}
 
